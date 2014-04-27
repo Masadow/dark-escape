@@ -19,6 +19,7 @@
 	<assets path="assets" />
 	<assets path="assets/images" rename="images" include="*.jpg|*.png" />
 	<assets path="assets/data" rename="data" include="*.csv|*.pyxel" />
+	<assets path="assets/sounds" rename="sounds" include="*.wav" />
 	
 	<haxelib name="flixel"/>
 	

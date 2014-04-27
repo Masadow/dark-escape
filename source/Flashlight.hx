@@ -25,7 +25,7 @@ class Flashlight extends FlxSprite
 	var lastTargetY : Float;
 	
 	var power = 100;
-	var visionAngle = Math.PI / 6;
+	var visionAngle = Math.PI / 4;
 	var halfVisionAngle : Float;
 	var rays = 100;
 	var step : Float;
@@ -81,9 +81,10 @@ class Flashlight extends FlxSprite
 //				rotated = FlxAngle.rotatePoint(FlxG.mouse.x, FlxG.mouse.y, origin.x, origin.y, FlxAngle.asDegrees(angle));
 				var target = findBorder(origin, rotated);
 				map.ray(origin, target, target, 10);
+				//Add small glow
 				vertices.push(target);
 			}
-			FlxSpriteUtil.drawPolygon(light, vertices, 0xFFFF0000, { color: 0xFFFF0000, thickness: 1 }, { color: 0xFFFF0000 } );
+			FlxSpriteUtil.drawPolygon(light, vertices, 0xFFFF0000, { color: 0xFFFF0000, thickness: 6 }, { color: 0xFFFF0000 } );
 			pixels.copyChannel(light.pixels, new Rectangle(0, 0, width, height), new Point(), BitmapDataChannel.BLUE, BitmapDataChannel.ALPHA);
 		}
 		origin.destroy();

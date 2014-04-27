@@ -2,6 +2,8 @@ package ;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.tile.FlxTilemap;
+import flixel.util.FlxColor;
+import flixel.util.FlxSpriteUtil;
 
 /**
  * ...
@@ -12,14 +14,17 @@ class Player extends FlxSprite
 	
 	private var map : FlxTilemap;
 	public var justMoved : Bool;
+	private var lastSound : Float;
 
 	public function new(map : FlxTilemap) 
 	{
-		super(4, 4);
-		makeGraphic(8, 8);
+		super(8, 8);
+		makeGraphic(9, 9, 0x0);
+		FlxSpriteUtil.drawCircle(this, 4, 4, 4, FlxColor.WHITE, null, { color: FlxColor.WHITE } );
 
 		this.map = map;
 		justMoved = true;
+		lastSound = 0;
 	}
 
 	private function moveTo(newx : Float, newy : Float)
@@ -41,7 +46,7 @@ class Player extends FlxSprite
 		super.update();
 
 		justMoved = false;
-		var speed = FlxG.elapsed * 100;
+		var speed = FlxG.elapsed * 200;
 		if (FlxG.keys.pressed.DOWN || FlxG.keys.pressed.S)
 			moveTo(x, y + speed);
 		if (FlxG.keys.pressed.UP || FlxG.keys.pressed.W)
@@ -50,7 +55,13 @@ class Player extends FlxSprite
 			moveTo(x - speed, y);
 		if (FlxG.keys.pressed.RIGHT || FlxG.keys.pressed.D)
 			moveTo(x + speed, y);
-		
+
+		lastSound += FlxG.elapsed;
+		if (justMoved && lastSound > 0.1)
+		{
+			lastSound = 0;
+			FlxG.sound.play("sounds/walk.wav");
+		}
 	}
 
 }

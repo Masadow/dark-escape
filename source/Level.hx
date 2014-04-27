@@ -1,4 +1,5 @@
 package ;
+import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.group.FlxGroup;
@@ -12,6 +13,8 @@ import openfl.Assets;
 class Level extends FlxGroup
 {
 	public var player : Player;
+	private var undergroundMap : FlxTilemap;
+	private var elapsed : Float;
 
 	public function new(n : Int) 
 	{
@@ -39,10 +42,11 @@ class Level extends FlxGroup
 				surface += line + "\n";
 		}
 		
-		var undergroundMap = new FlxTilemap();
+		undergroundMap = new FlxTilemap();
 		undergroundMap.loadMap(underground, "images/ld29.png", 32, 32);
 		undergroundMap.setTileProperties(Tiles.WALL, FlxObject.ANY);
 		undergroundMap.setTileProperties(Tiles.FLOOR, FlxObject.NONE);
+		undergroundMap.setTileProperties(Tiles.WIN, FlxObject.NONE);
 
 		var surfaceMap = new FlxTilemap();
 		surfaceMap.loadMap(surface, "images/ld29.png", 32, 32);
@@ -60,6 +64,22 @@ class Level extends FlxGroup
 		add(undergroundMap); //Underground layer
 		add(content); //Middle layer
 		add(surfaceMap); //Surface layer
+		
+		elapsed = 0;
+	}
+	
+	override public function update():Void 
+	{
+		super.update();
+		
+		var p = player.getMidpoint();
+		
+		elapsed += FlxG.elapsed;
+		
+		if (undergroundMap.getTile(Std.int(p.x / 32), Std.int(p.y / 32)) == Tiles.WIN)
+		{
+			FlxG.switchState(new WinState(Math.round(elapsed)));
+		}
 	}
 	
 }
