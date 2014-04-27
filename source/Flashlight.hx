@@ -27,7 +27,7 @@ class Flashlight extends FlxSprite
 	var power = 100;
 	var visionAngle = Math.PI / 6;
 	var halfVisionAngle : Float;
-	var rays = 25;
+	var rays = 100;
 	var step : Float;
 	
 	var cosTable : Array<Float> = new Array<Float>();
@@ -71,7 +71,8 @@ class Flashlight extends FlxSprite
 			FlxSpriteUtil.fill(light, 0xFF0000FF);
 
 			var rotated = FlxPoint.get();
-			var prev : FlxPoint = null;
+			var vertices = new Array<FlxPoint>();
+			vertices.push(origin);
 			for (i in 0...rays)
 			{
 				rotated.x = (FlxG.mouse.x - origin.x) * cosTable[i] - (FlxG.mouse.y - origin.y) * sinTable[i] + origin.x;
@@ -80,19 +81,10 @@ class Flashlight extends FlxSprite
 //				rotated = FlxAngle.rotatePoint(FlxG.mouse.x, FlxG.mouse.y, origin.x, origin.y, FlxAngle.asDegrees(angle));
 				var target = findBorder(origin, rotated);
 				map.ray(origin, target, target, 10);
-				if (prev == null)
-					prev = FlxPoint.get(target.x, target.y);
-				else
-				{
-					FlxSpriteUtil.drawPolygon(light, [target, prev, origin], 0xFFFF0000, { color: 0xFFFF0000, thickness: 1 }, { color: 0xFFFF0000 } );
-					prev.copyFrom(target);
-				}
+				vertices.push(target);
 			}
-//			FlxSpriteUtil.alphaMaskFlxSprite(this, light, this);
-			drawFrame();
-			var data:BitmapData = pixels.clone();
-			data.copyChannel(light.pixels, new Rectangle(0, 0, width, height), new Point(), BitmapDataChannel.BLUE, BitmapDataChannel.ALPHA);
-			this.pixels = data;
+			FlxSpriteUtil.drawPolygon(light, vertices, 0xFFFF0000, { color: 0xFFFF0000, thickness: 1 }, { color: 0xFFFF0000 } );
+			pixels.copyChannel(light.pixels, new Rectangle(0, 0, width, height), new Point(), BitmapDataChannel.BLUE, BitmapDataChannel.ALPHA);
 		}
 		origin.destroy();
 	}
